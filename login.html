@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | HEV Cosmetics</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Tajawal', sans-serif; }
+        
+        body {
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-image: url('https://images.unsplash.com/photo-1596462502278-27bfdd403348?auto=format&fit=crop&w=1920&q=80');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .login-container {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .logo { font-size: 2.5rem; font-weight: 900; margin-bottom: 20px; letter-spacing: 2px; }
+        h2 { margin-bottom: 30px; color: #333; }
+        
+        /* تصميم زر جوجل */
+        .btn-google {
+            width: 100%; padding: 12px; background: #fff; color: #757575;
+            border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; font-weight: bold;
+            cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 20px;
+        }
+        .btn-google:hover { background: #f1f1f1; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .google-icon { width: 20px; height: 20px; }
+
+        .divider { margin: 20px 0; color: #aaa; font-size: 0.9rem; position: relative; }
+        .divider::before, .divider::after { content: ""; position: absolute; top: 50%; width: 40%; height: 1px; background: #ddd; }
+        .divider::before { left: 0; }
+        .divider::after { right: 0; }
+
+        .input-group { margin-bottom: 15px; text-align: left; }
+        .input-group label { display: block; margin-bottom: 5px; font-weight: bold; color: #555; font-size: 0.9rem; }
+        .input-group input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; }
+
+        .btn-login { width: 100%; padding: 12px; background: #000; color: #fff; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .btn-login:hover { background: #e50000; }
+
+        .back-link { display: block; margin-top: 15px; color: #666; text-decoration: none; font-size: 0.9rem; }
+        .back-link:hover { text-decoration: underline; color: #000; }
+
+        /* رابط الأدمن السري */
+        .admin-trigger { margin-top: 30px; font-size: 0.8rem; color: #ccc; cursor: pointer; text-decoration: underline; }
+        .admin-trigger:hover { color: #e50000; }
+    </style>
+</head>
+<body>
+
+    <div class="login-container">
+        <div class="logo">HEV</div>
+        <h2>Welcome Back</h2>
+        
+        <button class="btn-google" id="google-btn">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" class="google-icon" alt="G">
+            Sign in with Google
+        </button>
+
+        <div class="divider">OR</div>
+
+        <form onsubmit="handleManualLogin(event)">
+            <div class="input-group">
+                <label>Name</label>
+                <input type="text" id="username" placeholder="Enter your name" required>
+            </div>
+            <button type="submit" class="btn-login">Continue as Guest</button>
+        </form>
+
+        <a href="index.html" class="back-link">← Back to Store</a>
+
+        <div class="admin-trigger" onclick="adminLogin()">Admin Access</div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        
+        const firebaseConfig = {
+            apiKey: "AIzaSyDQmOnwcsyvdWf9LnxcG62JGtLYn1BMXts",
+            authDomain: "hev-store.firebaseapp.com",
+            projectId: "hev-store",
+            storageBucket: "hev-store.firebasestorage.app",
+            messagingSenderId: "44064506587",
+            appId: "1:44064506587:web:3e5f83da342f922a5582fe",
+            measurementId: "G-YYBHT7CT0P"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
+        const googleBtn = document.getElementById('google-btn');
+        
+        googleBtn.addEventListener('click', () => {
+            signInWithPopup(auth, provider)
+                .then((result) => {
+                    const user = result.user;
+                    
+                    // ⚠️ هذا التنبيه سيظهر لك إيميلك بالضبط، انسخه
+                    alert("تم تسجيل الدخول بالإيميل: " + user.email);
+
+                    localStorage.setItem('userName', user.displayName);
+                    localStorage.setItem('userEmail', user.email);
+
+                    // 👇👇👇 ضع إيميلك الذي ظهر في الرسالة هنا مكان YOUR_EMAIL
+                    if(user.email === "omkurdiii@gmail.com") {
+                        window.location.href = 'admin.html';
+                    } else {
+                        window.location.href = 'index.html';
+                    }
+                })
+                .catch((error) => {
+                    console.error("Error:", error);
+                });
+        });
+    </script>
+
+    <script>
+        // دالة دخول الضيف
+        function handleManualLogin(e) {
+            e.preventDefault();
+            const name = document.getElementById('username').value;
+            localStorage.setItem('userName', name);
+            window.location.href = 'index.html';
+        }
+
+        // 🔐 دالة دخول الأدمن (الباسوورد هنا)
+        function adminLogin() {
+            let password = prompt("Enter Admin Password:");
+            
+            // 👇 هنا كلمة المرور: admin123
+            if (password === "admin123") {
+                localStorage.setItem('userName', 'Admin');
+                window.location.href = 'admin.html';
+            } else if (password !== null) {
+                alert("Incorrect Password!");
+            }
+        }
+    </script>
+
+</body>
+</html>

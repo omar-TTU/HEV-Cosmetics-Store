@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HEV Cosmetics | Official Store</title>
+    <link rel="icon" type="image/png" href="logo.png">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    
+    <style>
+        #cart-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(0,0,0,0.5); z-index: 999;
+        }
+        #cart-drawer {
+            position: fixed; top: 0; right: -400px; /* Right side for English */
+            width: 350px; height: 100%; background: #fff; 
+            box-shadow: -5px 0 15px rgba(0,0,0,0.2); z-index: 1000; 
+            transition: 0.4s; display: flex; flex-direction: column; padding: 20px;
+        }
+        .drawer-item {
+            display: flex; align-items: center; gap: 12px; margin-bottom: 20px; 
+            border-bottom: 1px solid #eee; padding-bottom: 15px;
+        }
+        .qty-controls {
+            display: flex; align-items: center; border: 1px solid #ddd; border-radius: 4px; margin-right: 10px;
+        }
+        .qty-btn {
+            padding: 2px 8px; background: #f9f9f9; border: none; cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="nav-container">
+            <div class="logo">HEV</div>
+            
+            <ul class="nav-links" id="nav-links">
+                <li><a href="#" onclick="closeMenu()">HOME</a></li>
+                <li><a href="#products" onclick="closeMenu()">MAKEUP</a></li>
+                <li><a href="#features" onclick="closeMenu()">ABOUT HEV</a></li>
+            </ul>
+
+            <div class="nav-icons">
+                <div class="search-box">
+                    <input type="text" id="productSearch" placeholder="Search for beauty..." onkeyup="searchProducts()">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </div>
+                
+                <a href="login.html" class="login-link">Login</a>
+
+                <div class="cart-icon-wrapper">
+                    <a href="#" class="cart-icon" onclick="openCart(event)" style="position: relative; text-decoration: none; color: white; display: inline-flex; align-items: center;">
+                        <i class="fa-solid fa-cart-shopping" style="font-size: 1.2rem;"></i> 
+                        <span id="cart-count-badge" style="background: #e50000; color: white; border-radius: 50%; padding: 2px 6px; font-size: 0.8rem; position: absolute; top: -10px; right: -12px; font-weight: bold;">0</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Irresistible Radiance</h1>
+            <p>Discover the new spring collection. Professional products designed to suit all skin tones and enhance your attractive features.</p>
+            <a href="#products" class="btn btn-primary">SHOP THE COLLECTION</a>
+        </div>
+    </section>
+
+    <section class="features" id="features">
+        <div class="feature-box">
+            <i class="fa-solid fa-truck-fast"></i>
+            <h3>Free Delivery</h3>
+            <p>For orders over $50</p>
+        </div>
+        <div class="feature-box">
+            <i class="fa-solid fa-check-circle"></i>
+            <h3>100% Genuine</h3>
+            <p>Guaranteed by official agent</p>
+        </div>
+        <div class="feature-box">
+            <i class="fa-solid fa-leaf"></i>
+            <h3>Cruelty Free</h3>
+            <p>Not tested on animals</p>
+        </div>
+    </section>
+
+    <section class="products-area" id="products">
+        <div class="section-header">
+            <h2>Best Sellers</h2>
+        </div>
+
+        <div class="category-filter">
+            <button class="filter-btn active" onclick="filterCategory(event, 'all')">All</button>
+            <button class="filter-btn" onclick="filterCategory(event, 'face')">Face</button>
+            <button class="filter-btn" onclick="filterCategory(event, 'lips')">Lips</button>
+            <button class="filter-btn" onclick="filterCategory(event, 'eyes')">Eyes</button>
+        </div>
+
+            <div class="products-grid" id="dynamic-products">
+            </div>
+
+        <div class="pagination-controls">
+            <button onclick="prevPage()" id="prevBtn" class="page-btn"><i class="fa-solid fa-chevron-left"></i></button>
+            <span id="page-indicator">Page 1 of 1</span>
+            <button onclick="nextPage()" id="nextBtn" class="page-btn"><i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+    </section>
+
+    <footer class="main-footer">
+        <div class="footer-container">
+            <div class="footer-col about">
+                <h2 class="footer-logo">HEV</h2>
+                <p>The premier destination for professional makeup. We believe beauty is for everyone.</p>
+                <div class="social-links">
+                    <a href="https://www.facebook.com/heva.eibesh" target="_blank"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a href="https://www.instagram.com/heva.eibesh/?hl=ar" target="_blank"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="https://www.tiktok.com/@hevaeibsh" target="_blank"><i class="fa-brands fa-tiktok"></i></a>
+                </div>
+            </div>
+            <div class="footer-col links">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="#products">Shop All</a></li>
+                    <li><a href="#features">Why Us?</a></li>
+                    <li><a href="#">FAQs</a></li>
+                </ul>
+            </div>
+            <div class="footer-col links">
+                <h3>Customer Service</h3>
+                <ul>
+                    <li><a href="#">Return Policy</a></li>
+                    <li><a href="#">Track Order</a></li>
+                    <li><a href="#">Contact Us</a></li>
+                </ul>
+            </div>
+            <div class="footer-col payment">
+                <h3>Payment Methods</h3>
+                <div class="payment-icons">
+                    <i class="fa-brands fa-cc-visa"></i>
+                    <i class="fa-brands fa-cc-mastercard"></i>
+                    <i class="fa-brands fa-cc-apple-pay"></i>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 HEV Cosmetics. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <div id="cart-overlay" onclick="closeCart()"></div>
+    
+    <div id="cart-drawer">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 15px;">
+            <h2 style="margin: 0; font-size: 1.5rem;">Your Cart 💄</h2>
+            <button onclick="closeCart()" style="background: none; border: none; font-size: 1.5rem; cursor: pointer;">&times;</button>
+        </div>
+
+        <div id="drawer-items" style="flex: 1; overflow-y: auto; padding: 15px 0;">
+            </div>
+
+        <div style="border-top: 2px solid #eee; padding-top: 15px;">
+            <h3 style="display: flex; justify-content: space-between;">Total: <span id="drawer-total">$0</span></h3>
+            <button onclick="checkout()" style="width: 100%; padding: 15px; background: #000; color: #fff; border: none; font-weight: bold; cursor: pointer; border-radius: 5px; margin-top: 10px; transition: 0.3s;" onmouseover="this.style.background='#e50000'" onmouseout="this.style.background='#000'">
+                Checkout Now
+            </button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+
+    
+</body>
+</html>

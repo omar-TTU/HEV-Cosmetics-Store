@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HEV Cosmetics | تفاصيل المنتج</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <div class="nav-container">
+            <div class="logo"><a href="index.html">HEV</a></div>
+            <div class="nav-icons">
+                <div class="cart-icon-wrapper" onclick="toggleCart()">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    <span class="cart-count" id="cart-count-badge">0</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="breadcrumb">
+        <a href="index.html">الرئيسية</a> / <a href="#">المكياج</a> / <a href="#">الوجه</a> / <span>Liquid Highlighter</span>
+    </div>
+
+    <section class="single-product-section">
+        <div class="product-container">
+            
+            <div class="product-gallery">
+                <div class="thumbnail-list">
+                    <img src="https://img01.ztat.net/article/spp-media-p1/3a8dbdbabd6f47b68173e972fdbd2187/18dfb6ec1dac47908221791240df4af0.jpg?imwidth=1800" alt="صورة مصغرة 1" class="active" onclick="changeMainImage(this)">
+                    <img src="https://img01.ztat.net/article/spp-media-p1/580c58401e624525be0a7c7da25c783f/478112fe7f004171baac25de71763e9f.jpg?imwidth=1800" alt="صورة مصغرة 2" onclick="changeMainImage(this)">
+                    <img src="https://images.unsplash.com/photo-1599305090598-fe179d501227?w=600" alt="صورة مصغرة 3" onclick="changeMainImage(this)">
+                </div>
+                <div class="main-image-container">
+                    <img src="https://img01.ztat.net/article/spp-media-p1/3a8dbdbabd6f47b68173e972fdbd2187/18dfb6ec1dac47908221791240df4af0.jpg?imwidth=1800" id="main-product-image" alt="هايلايتر">
+                </div>
+            </div>
+
+            <div class="product-details-info">
+                <h4 class="brand-name">HEV LUXURY</h4>
+                <h1 class="product-title-large">Liquid Gold Highlighter</h1>
+                <p class="product-price-large">35.00$ <span class="vat-info">شامل الضريبة</span></p>
+                
+                <p class="product-description">
+                    هايلايتر سائل فائق النعومة يمنح بشرتك إشراقة ذهبية طبيعية. تركيبة خفيفة الوزن تندمج بسلاسة مع كريم الأساس لتوهج يدوم طوال اليوم.
+                </p>
+
+                <div class="color-selection">
+                    <p>اختاري الدرجة: <span id="selected-color-name">Extra Ordinary</span></p>
+                    <div class="color-swatches">
+                        <div class="swatch active" style="background-color: #d4af37;" onclick="selectColor(this, 'Extra Ordinary')"></div>
+                        <div class="swatch" style="background-color: #ffb6c1;" onclick="selectColor(this, 'Rose Gold')"></div>
+                        <div class="swatch" style="background-color: #e6c280;" onclick="selectColor(this, 'Champagne')"></div>
+                        <div class="swatch" style="background-color: #b08d57;" onclick="selectColor(this, 'Bronze')"></div>
+                    </div>
+                </div>
+
+                <div class="add-to-cart-wrapper">
+                    <input type="number" id="product-quantity" value="1" min="1" max="10" class="qty-input">
+                    <button class="btn-add-large" onclick="addSingleProductToCart()">أضف للسلة <i class="fa-solid fa-cart-plus"></i></button>
+                </div>
+
+                <ul class="product-meta">
+                    <li><i class="fa-solid fa-check"></i> متوفر في المخزون</li>
+                    <li><i class="fa-solid fa-truck"></i> توصيل خلال 48 ساعة</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <div class="cart-overlay" id="cart-overlay" onclick="toggleCart()"></div>
+    <div class="cart-drawer" id="cart-drawer">
+        <div class="cart-header">
+            <h2>سلة المشتريات</h2>
+            <i class="fa-solid fa-xmark close-cart" onclick="toggleCart()"></i>
+        </div>
+        <div id="cart-items-container"></div>
+        <div class="cart-footer">
+            <div class="cart-total">المجموع: <span id="cart-total-price">0.00$</span></div>
+            <button class="btn-checkout">إتمام الطلب</button>
+        </div>
+    </div>
+    <div id="toast">تم الإضافة!</div>
+
+    <script src="script.js"></script>
+    <script>
+        // 1. قراءة رقم المنتج (ID) من رابط الصفحة
+        const urlParams = new URLSearchParams(window.location.search);
+        const productId = parseInt(urlParams.get('id'));
+
+        // 2. البحث عن المنتج في قاعدة البيانات المصغرة
+        const product = productsDB.find(p => p.id === productId);
+
+        // 3. إذا وجد المنتج، قم بتغيير محتوى الصفحة تلقائياً
+        if (product) {
+            document.getElementById('main-product-image').src = product.image; // تغيير الصورة
+            document.querySelector('.product-title-large').innerText = product.name; // تغيير الاسم
+            document.querySelector('.product-price-large').innerHTML = `${product.price.toFixed(2)}$ <span class="vat-info">شامل الضريبة</span>`; // تغيير السعر
+            document.querySelector('.product-description').innerText = product.description; // تغيير الشرح
+            document.querySelector('.breadcrumb span').innerText = product.name; // تغيير شريط التنقل العلوي
+            
+            // تحديث زر "أضف للسلة" ليعمل مع هذا المنتج التلقائي
+            const addBtn = document.querySelector('.btn-add-large');
+            addBtn.onclick = function() {
+                const qty = parseInt(document.getElementById('product-quantity').value);
+                for(let i=0; i < qty; i++){
+                    addToCart(product.name, product.price, product.image);
+                }
+            };
+        } else {
+            // إذا كان الرقم غير موجود
+            document.querySelector('.product-details-info').innerHTML = "<h1>المنتج غير موجود!</h1>";
+            document.querySelector('.product-gallery').style.display = "none";
+        }
+    </script>
+</body>
+</html>

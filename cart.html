@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>HEV | سلة المشتريات</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .cart-container { max-width: 900px; margin: 50px auto; padding: 20px; background: #fff; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        .cart-header { text-align: center; margin-bottom: 30px; }
+        .cart-item { display: flex; align-items: center; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid #eee; }
+        .cart-item img { width: 80px; height: 80px; object-fit: cover; border-radius: 8px; }
+        .item-details { flex: 1; margin-right: 15px; }
+        .item-details h4 { margin: 0 0 5px 0; }
+        .item-details p { margin: 0; color: #777; }
+        .item-qty input { width: 50px; padding: 5px; text-align: center; border: 1px solid #ddd; border-radius: 4px; }
+        .item-price { font-weight: bold; width: 80px; text-align: center; }
+        .btn-remove { background: none; border: none; color: #e50000; cursor: pointer; font-size: 1.2rem; transition: 0.3s; }
+        .btn-remove:hover { transform: scale(1.2); }
+        
+        .cart-summary { margin-top: 30px; text-align: left; padding: 20px; background: #f9f9f9; border-radius: 8px; }
+        .cart-summary h3 { margin-top: 0; }
+        .btn-checkout { background: #000; color: #fff; padding: 15px 30px; border: none; cursor: pointer; font-weight: bold; font-size: 1.1rem; border-radius: 5px; width: 100%; margin-top: 15px; transition: 0.3s; }
+        .btn-checkout:hover { background: #e50000; }
+        
+        .empty-cart { text-align: center; padding: 50px; color: #777; }
+        .empty-cart a { color: #e50000; font-weight: bold; text-decoration: none; }
+    </style>
+</head>
+<body>
+
+    <div class="cart-container">
+        <div class="cart-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+            <h2>سلة المشتريات 🛒</h2>
+            <button onclick="window.location.href='index.html'" style="background: transparent; color: #000; border: 2px solid #000; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; transition: 0.3s;" onmouseover="this.style.background='#000'; this.style.color='#fff'" onmouseout="this.style.background='transparent'; this.style.color='#000'">
+                &larr; متابعة التسوق
+            </button>
+        </div>
+
+        <div id="cart-items-container">
+            </div>
+
+        <div class="cart-summary" id="cart-summary" style="display: none;">
+            <h3>الإجمالي: $<span id="cart-total">0</span></h3>
+            <button class="btn-checkout" onclick="checkout()">إتمام الطلب الآن</button>
+        </div>
+    </div>
+
+    <script>
+        // 🌟 1. دالة قراءة السلة من الذاكرة وعرضها
+        function renderCart() {
+            let cart = JSON.parse(localStorage.getItem('hevCart')) || [];
+            let container = document.getElementById('cart-items-container');
+            let summary = document.getElementById('cart-summary');
+            let totalElement = document.getElementById('cart-total');
+            let total = 0;
+
+            // إذا كانت السلة فارغة
+            if (cart.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-cart">
+                        <h3>سلتك فارغة حالياً!</h3>
+                        <p>يبدو أنك لم تضف أي منتجات للجمال بعد.</p>
+                        <a href="index.html">العودة للتسوق</a>
+                    </div>`;
+                summary.style.display = 'none'; // إخفاء زر الدفع
+                return;
+            }
+
+            // إذا كان فيها منتجات
+            container.innerHTML = '';
+            summary.style.display = 'block'; // إظهار زر الدفع
+
+            cart.forEach((item, index) => {
+                let itemTotal = item.price * item.quantity;
+                total += itemTotal;
+
+                container.innerHTML += `
+                    <div class="cart-item">
+                        <img src="${item.image}" alt="${item.name}">
+                        <div class="item-details">
+                            <h4>${item.name}</h4>
+                            <p>السعر: $${item.price}</p>
+                        </div>
+                        <div class="item-qty">
+                            <input type="number" value="${item.quantity}" min="1" onchange="updateQuantity(${index}, this.value)">
+                        </div>
+                        <div class="item-price">
+                            $${itemTotal}
+                        </div>
+                        <button class="btn-remove" onclick="removeItem(${index})" title="حذف المنتج">🗑️</button>
+                    </div>
+                `;
+            });
+
+            // تحديث السعر الإجمالي
+            totalElement.innerText = total;
+        }
+
+        // 🌟 2. دالة تعديل الكمية
+        function updateQuantity(index, newQuantity) {
+            let cart = JSON.parse(localStorage.getItem('hevCart')) || [];
+            cart[index].quantity = parseInt(newQuantity);
+            localStorage.setItem('hevCart', JSON.stringify(cart));
+            renderCart(); // إعادة رسم السلة لتحديث الأسعار
+        }
+
+        // 🌟 3. دالة حذف منتج من السلة
+        function removeItem(index) {
+            let cart = JSON.parse(localStorage.getItem('hevCart')) || [];
+            cart.splice(index, 1); // حذف العنصر من المصفوفة
+            localStorage.setItem('hevCart', JSON.stringify(cart));
+            renderCart(); // إعادة رسم السلة
+        }
+
+        // 🌟 4. دالة إتمام الطلب (مبدئية)
+        function checkout() {
+            alert("تم استلام طلبك بنجاح! سيتم التواصل معك قريباً.");
+            localStorage.removeItem('hevCart'); // تفريغ السلة بعد الشراء
+            window.location.href = 'index.html'; // العودة للرئيسية
+        }
+
+        // تشغيل دالة العرض فور فتح الصفحة
+        window.addEventListener('DOMContentLoaded', renderCart);
+    </script>
+</body>
+</html>
